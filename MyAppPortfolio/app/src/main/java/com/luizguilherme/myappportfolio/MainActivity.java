@@ -11,79 +11,64 @@ import static com.luizguilherme.myappportfolio.R.layout;
 
 public class MainActivity extends AppCompatActivity {
 
-    private Button popularMoviesButton;
-    private Button stockHawkButton;
-    private Button builtItBiggerButton;
-    private Button appMaterialButton;
-    private Button goUbiquitousButton;
-    private Button capstoneButton;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(layout.activity_main);
 
-        popularMoviesButton = (Button) findViewById(id.popular_movies);
-        stockHawkButton = (Button) findViewById(id.stock_hawk);
-        builtItBiggerButton = (Button) findViewById(id.built_it_bigger);
-        appMaterialButton = (Button) findViewById(id.app_material);
-        goUbiquitousButton = (Button) findViewById(id.go_ubiquitous);
-        capstoneButton = (Button) findViewById(id.capstone);
+        Button popularMoviesButton = (Button) findViewById(id.popular_movies);
+        Button stockHawkButton = (Button) findViewById(id.stock_hawk);
+        Button builtItBiggerButton = (Button) findViewById(id.built_it_bigger);
+        Button appMaterialButton = (Button) findViewById(id.app_material);
+        Button goUbiquitousButton = (Button) findViewById(id.go_ubiquitous);
+        Button capstoneButton = (Button) findViewById(id.capstone);
 
         popularMoviesButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Button button = (Button) v;
-                String launchAppMessage = String.format(getString(R.string.launch_app_message), button.getText());
-                Toast.makeText(MainActivity.this, launchAppMessage, Toast.LENGTH_SHORT).show();
+                showToast((Button) v);
             }
         });
 
         stockHawkButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Button button = (Button) v;
-                String launchAppMessage = String.format(getString(R.string.launch_app_message), button.getText());
-                Toast.makeText(MainActivity.this, launchAppMessage, Toast.LENGTH_SHORT).show();
+                showToast((Button) v);
             }
         });
 
         builtItBiggerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Button button = (Button) v;
-                String launchAppMessage = String.format(getString(R.string.launch_app_message), button.getText());
-                Toast.makeText(MainActivity.this, launchAppMessage, Toast.LENGTH_SHORT).show();
+                showToast((Button) v);
             }
         });
 
         appMaterialButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Button button = (Button) v;
-                String launchAppMessage = String.format(getString(R.string.launch_app_message), button.getText());
-                Toast.makeText(MainActivity.this, launchAppMessage, Toast.LENGTH_SHORT).show();
+                showToast((Button) v);
             }
         });
 
         goUbiquitousButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Button button = (Button) v;
-                String launchAppMessage = String.format(getString(R.string.launch_app_message), button.getText());
-                Toast.makeText(MainActivity.this, launchAppMessage, Toast.LENGTH_SHORT).show();
+                showToast((Button) v);
             }
         });
 
         capstoneButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Button button = (Button) v;
-                String launchAppMessage = String.format(getString(R.string.launch_app_message), button.getText());
-                Toast.makeText(MainActivity.this, launchAppMessage, Toast.LENGTH_SHORT).show();
+                showToast((Button) v);
             }
         });
 
+    }
 
+    private void showToast(Button button) {
+        String launchAppMessage = String.format(getString(R.string.launch_app_message), button.getText());
+        Toast.makeText(MainActivity.this, launchAppMessage, Toast.LENGTH_SHORT).show();
     }
 }
