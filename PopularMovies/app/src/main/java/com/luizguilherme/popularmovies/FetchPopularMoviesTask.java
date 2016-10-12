@@ -1,7 +1,10 @@
 package com.luizguilherme.popularmovies;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.ArrayAdapter;
 
@@ -16,15 +19,19 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class FetchPopularMoviesTask extends AsyncTask<Void, Void, List<Movie>> {
 
     private final String TAG = FetchPopularMoviesTask.class.getSimpleName();
     private ArrayAdapter<Movie> adapter;
+    private Context context;
 
-    public FetchPopularMoviesTask(ArrayAdapter<Movie> adapter) {
+    public FetchPopularMoviesTask(ArrayAdapter<Movie> adapter, Context context) {
         this.adapter = adapter;
+        this.context = context;
     }
 
     @Override
@@ -106,10 +113,32 @@ public class FetchPopularMoviesTask extends AsyncTask<Void, Void, List<Movie>> {
 
     @Override
     protected void onPostExecute(List<Movie> result) {
-        if (result != null && adapter != null) {
-            adapter.clear();
-            adapter.addAll(result);
+        if (result == null || adapter == null) {
+            return;
         }
+
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+        String prefSortOrder = preferences.getString(context.getString(R.string.pref_key_sort_order)
+                , context.getString(R.string.pref_default_sort_order));
+
+        if(context.getString(R.string.sort_oder_value_popular).equalsIgnoreCase(prefSortOrder)){
+            Collections.sort(result, new Comparator<Movie>() {
+                public int compare(Movie movie1, Movie movie2) {
+                    return movie2.getPopularity() < movie1.getPopularity() ? -1 :
+                            (movie2.getPopularity() == movie1.getPopularity() ? 0 : 1);
+                }
+            });
+        }else{
+            Collections.sort(result, new Comparator<Movie>() {
+                public int compare(Movie movie1, Movie movie2) {
+                    return movie2.getVoteAverage() < movie1.getVoteAverage() ? -1 :
+                            (movie2.getVoteAverage() == movie1.getVoteAverage() ? 0 : 1);
+                }
+            });
+        }
+
+        adapter.clear();
+        adapter.addAll(result);
     }
 
     private List<Movie> getMovieDataFromJson(String popularMoviesJsonStr) throws JSONException {
@@ -117,11 +146,12 @@ public class FetchPopularMoviesTask extends AsyncTask<Void, Void, List<Movie>> {
         // These are the names of the JSON objects that need to be extracted.
         final String MDB_RESULTS = "results";
         final String MDB_ID = "id";
-        final String MDB_TITLE = "title";
+        final String MDB_ORIGINAL_TITLE = "original_title";
         final String MDB_POSTER = "poster_path";
         final String MDB_OVERVIEW = "overview";
         final String MDB_VOTE_AVERAGE = "vote_average";
         final String MDB_RELEASE_DATE = "release_date";
+        final String MDB_POPULARITY = "popularity";
 
         JSONObject popularMoviesJson = new JSONObject(popularMoviesJsonStr);
         JSONArray moviesArray = popularMoviesJson.getJSONArray(MDB_RESULTS);
@@ -133,14 +163,15 @@ public class FetchPopularMoviesTask extends AsyncTask<Void, Void, List<Movie>> {
             // Get the JSON object representing a movie
             JSONObject movieObject = moviesArray.getJSONObject(i);
 
-            int id = Integer.parseInt(movieObject.getString(MDB_ID));
-            String title = movieObject.getString(MDB_TITLE);
+            int id = movieObject.getInt(MDB_ID);
+            String originalTitle = movieObject.getString(MDB_ORIGINAL_TITLE);
             String posterPath = movieObject.getString(MDB_POSTER);
             String overview = movieObject.getString(MDB_OVERVIEW);
-            Double voteAverage = movieObject.getDouble(MDB_VOTE_AVERAGE);
+            double voteAverage = movieObject.getDouble(MDB_VOTE_AVERAGE);
             String releaseDate = movieObject.getString(MDB_RELEASE_DATE);
+            double popularity = movieObject.getDouble(MDB_POPULARITY);
 
-            Movie movie = new Movie(id, title, posterPath, overview, voteAverage, releaseDate);
+            Movie movie = new Movie(id, originalTitle, posterPath, overview, voteAverage, releaseDate, popularity);
 
             moviesResult.add(movie);
 

@@ -3,31 +3,33 @@ package com.luizguilherme.popularmovies;
 public class Movie {
 
     private int id;
-    private String title;
+    private String originalTitle;
     private String overview;
     private String posterPath;
     private String releaseDate;
-    private Double voteAverage;
+    private double voteAverage;
+    private double popularity;
 
-    public Movie(int id, String title, String posterPath, String overview, Double voteAverage, String releaseDate) {
+    public Movie(int id, String originalTitle, String posterPath, String overview, double voteAverage, String releaseDate, double popularity) {
         this.id = id;
-        this.title = title;
+        this.originalTitle = originalTitle;
         this.overview = overview;
         this.posterPath = posterPath;
         this.releaseDate = releaseDate;
         this.voteAverage = voteAverage;
+        this.popularity = popularity;
     }
 
     public int getId() {
         return id;
     }
 
-    public String getTitle() {
-        return title;
+    public String getOriginalTitle() {
+        return originalTitle;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public void setOriginalTitle(String originalTitle) {
+        this.originalTitle = originalTitle;
     }
 
     public String getOverview() {
@@ -54,12 +56,21 @@ public class Movie {
         this.releaseDate = releaseDate;
     }
 
-    public Double getVoteAverage() {
+    public double getVoteAverage() {
         return voteAverage;
     }
 
-    public void setVoteAverage(Double voteAverage) {
+    public void setVoteAverage(double voteAverage) {
         this.voteAverage = voteAverage;
     }
+
+    public double getPopularity() {
+        return popularity;
+    }
+
+    public void setPopularity(double popularity) {
+        this.popularity = popularity;
+    }
+
 }
 
