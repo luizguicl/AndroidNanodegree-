@@ -5,6 +5,5 @@
     <item android:title="@string/refresh"
         android:id="@+id/action_refresh"
         app:showAsAction="never" />
-    <item android:title="Settings"
-        android:id="@+id/settings" />
+
 </menu>

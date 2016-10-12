@@ -1,13 +1,23 @@
 <resources>
+    <string name="pref_key_location" translatable="false">location</string>
+    <string name="pref_key_temperature_unit" translatable="false">temperatureUnit</string>
+    <string name="pref_default_location" translatable="false">94043</string>
+    <string name="pref_default_temperature_unit" translatable="false">@string/temperature_unit_value_metric</string>
+    <string name="temperature_unit_value_metric" translatable="false">metric</string>
+    <string name="temperature_unit_value_imperial" translatable="false">imperial</string>
+
     <string name="app_name">Sunshine</string>
     <string name="refresh">Refresh</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="settings">Settings</string>
+    <string name="share">Share</string>
     <string name="title_activity_detail">Details</string>
     <string name="title_activity_settings">Settings</string>
-    <string name="pref_location_label">Location</string>
-    <string name="pref_location_key" translatable="false">location</string>
-    <string name="pref_location_default" translatable="false">94043</string>
     <string name="pref_category_title_general">General Preferences</string>
+    <string name="pref_label_location">Location</string>
+    <string name="pref_label_temperature_units">Temperature Units</string>
+    <string name="temperature_unit_label_metric" >Metric</string>
+    <string name="temperature_unit_label_imperial">Imperial</string>
+    <string name="map_location">Map Location</string>
+
+
 </resources>
