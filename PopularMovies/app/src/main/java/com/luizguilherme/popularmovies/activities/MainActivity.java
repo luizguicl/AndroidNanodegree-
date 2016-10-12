@@ -1,13 +1,15 @@
-package com.luizguilherme.popularmovies;
+package com.luizguilherme.popularmovies.activities;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
-public class SettingsActivity extends AppCompatActivity {
+import com.luizguilherme.popularmovies.R;
+
+public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_settings);
+        setContentView(R.layout.activity_main);
     }
 }

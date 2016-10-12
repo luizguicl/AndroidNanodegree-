@@ -1,10 +1,12 @@
-package com.luizguilherme.popularmovies;
+package com.luizguilherme.popularmovies.fragments;
 
 import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
+
+import com.luizguilherme.popularmovies.R;
 
 public class SettingsFragment extends PreferenceFragment implements Preference.OnPreferenceChangeListener {
 

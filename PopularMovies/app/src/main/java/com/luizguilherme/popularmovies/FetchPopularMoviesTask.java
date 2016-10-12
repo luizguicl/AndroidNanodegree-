@@ -117,6 +117,13 @@ public class FetchPopularMoviesTask extends AsyncTask<Void, Void, List<Movie>> {
             return;
         }
 
+        sortMoviesAcordingToSettings(result);
+
+        adapter.clear();
+        adapter.addAll(result);
+    }
+
+    private void sortMoviesAcordingToSettings(List<Movie> result) {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
         String prefSortOrder = preferences.getString(context.getString(R.string.pref_key_sort_order)
                 , context.getString(R.string.pref_default_sort_order));
@@ -136,9 +143,6 @@ public class FetchPopularMoviesTask extends AsyncTask<Void, Void, List<Movie>> {
                 }
             });
         }
-
-        adapter.clear();
-        adapter.addAll(result);
     }
 
     private List<Movie> getMovieDataFromJson(String popularMoviesJsonStr) throws JSONException {

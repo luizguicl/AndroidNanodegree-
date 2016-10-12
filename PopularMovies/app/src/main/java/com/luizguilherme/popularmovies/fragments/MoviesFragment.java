@@ -1,4 +1,4 @@
-package com.luizguilherme.popularmovies;
+package com.luizguilherme.popularmovies.fragments;
 
 import android.content.Context;
 import android.content.Intent;
@@ -13,8 +13,17 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.Toast;
+
+import com.luizguilherme.popularmovies.Constants;
+import com.luizguilherme.popularmovies.FetchPopularMoviesTask;
+import com.luizguilherme.popularmovies.Movie;
+import com.luizguilherme.popularmovies.MoviesAdapter;
+import com.luizguilherme.popularmovies.R;
+import com.luizguilherme.popularmovies.activities.MovieDetailActivity;
+import com.luizguilherme.popularmovies.activities.SettingsActivity;
 
 import java.util.ArrayList;
 
@@ -40,18 +49,27 @@ public class MoviesFragment extends Fragment {
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(final LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+
+        View rootView = inflater.inflate(R.layout.fragment_movies, container, false);
 
         moviesAdapter = new MoviesAdapter(
                 getActivity(),
                 new ArrayList<Movie>()
         );
 
-        View rootView = inflater.inflate(R.layout.fragment_movies, container, false);
-
-        // Get a reference to the ListView, and attach this adapter to it.
         GridView listView = (GridView) rootView.findViewById(R.id.moviesList);
         listView.setAdapter(moviesAdapter);
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Movie movie = moviesAdapter.getItem(position);
+                Intent intent = new Intent(getActivity(), MovieDetailActivity.class);
+                intent.putExtra(Constants.EXTRA_MOVIE, movie);
+                startActivity(intent);
+            }
+        });
 
 
         return rootView;
