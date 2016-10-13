@@ -34,11 +34,6 @@ public class MoviesFragment extends Fragment {
     private MoviesAdapter moviesAdapter;
 
     public MoviesFragment() {
-        // Required empty public constructor
-    }
-
-    public static MoviesFragment newInstance() {
-        return new MoviesFragment();
     }
 
     @Override
@@ -71,7 +66,6 @@ public class MoviesFragment extends Fragment {
             }
         });
 
-
         return rootView;
     }
 
@@ -79,7 +73,7 @@ public class MoviesFragment extends Fragment {
     public void onStart() {
         super.onStart();
         if (isOnline()) {
-            FetchPopularMoviesTask moviesTask = new FetchPopularMoviesTask(moviesAdapter, getActivity());
+            FetchPopularMoviesTask moviesTask = new FetchPopularMoviesTask(getActivity(), moviesAdapter);
             moviesTask.execute();
         } else {
             Toast.makeText(getActivity(), "There is no internet connection!", Toast.LENGTH_SHORT).show();

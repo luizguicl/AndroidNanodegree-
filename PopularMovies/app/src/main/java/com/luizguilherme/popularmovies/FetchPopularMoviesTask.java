@@ -26,12 +26,13 @@ import java.util.List;
 public class FetchPopularMoviesTask extends AsyncTask<Void, Void, List<Movie>> {
 
     private final String TAG = FetchPopularMoviesTask.class.getSimpleName();
-    private ArrayAdapter<Movie> adapter;
-    private Context context;
 
-    public FetchPopularMoviesTask(ArrayAdapter<Movie> adapter, Context context) {
-        this.adapter = adapter;
+    private Context context;
+    private ArrayAdapter<Movie> adapter;
+
+    public FetchPopularMoviesTask(Context context, ArrayAdapter<Movie> adapter) {
         this.context = context;
+        this.adapter = adapter;
     }
 
     @Override
@@ -47,9 +48,11 @@ public class FetchPopularMoviesTask extends AsyncTask<Void, Void, List<Movie>> {
 
             // Construct the URL for the MovieDatabase api request
             final String MOVIES_BASE_URL = "http://api.themoviedb.org/3/movie/popular?";
+            final String LANGUAGE_PARAM = "language";
             final String APPID_PARAM = "api_key";
 
             Uri builtUri = Uri.parse(MOVIES_BASE_URL).buildUpon()
+                    .appendQueryParameter(LANGUAGE_PARAM, context.getString(R.string.languague))
                     .appendQueryParameter(APPID_PARAM, BuildConfig.THE_MOVIE_DB_API_KEY)
                     .build();
 

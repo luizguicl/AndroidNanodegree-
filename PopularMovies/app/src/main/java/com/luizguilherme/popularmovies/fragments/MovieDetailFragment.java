@@ -45,7 +45,6 @@ public class MovieDetailFragment extends Fragment {
         Intent intent = getActivity().getIntent();
         if (intent != null && intent.hasExtra(Constants.EXTRA_MOVIE)) {
             movie = (Movie) intent.getSerializableExtra(Constants.EXTRA_MOVIE);
-
         }else{
             Log.d(TAG, "Could not get movie from extras.");
             return rootView;
@@ -63,7 +62,7 @@ public class MovieDetailFragment extends Fragment {
         originalTitle.setText(movie.getOriginalTitle());
         String formattedDate = String.format("(%s)", movie.getReleaseDate());
         releaseDate.setText(formattedDate);
-        userRating.setText(String.format(new Locale("pt_BR", "BR"), "%.2f", movie.getVoteAverage()));
+        userRating.setText(String.format(new Locale(getString(R.string.languague), getString(R.string.country)), "%.2f", movie.getVoteAverage()));
         overview.setText(movie.getOverview());
 
         return rootView;
