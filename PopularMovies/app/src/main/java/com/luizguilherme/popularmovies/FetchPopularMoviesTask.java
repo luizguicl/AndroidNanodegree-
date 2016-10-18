@@ -19,8 +19,6 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 public class FetchPopularMoviesTask extends AsyncTask<Void, Void, List<Movie>> {
@@ -47,11 +45,14 @@ public class FetchPopularMoviesTask extends AsyncTask<Void, Void, List<Movie>> {
         try {
 
             // Construct the URL for the MovieDatabase api request
-            final String MOVIES_BASE_URL = "http://api.themoviedb.org/3/movie/popular?";
+            final String MOVIES_BASE_URL = "http://api.themoviedb.org/3/movie/";
             final String LANGUAGE_PARAM = "language";
             final String APPID_PARAM = "api_key";
 
+            String sortingPath = getSortingPathAccordingToSettings();
+
             Uri builtUri = Uri.parse(MOVIES_BASE_URL).buildUpon()
+                    .appendEncodedPath(sortingPath)
                     .appendQueryParameter(LANGUAGE_PARAM, context.getString(R.string.languague))
                     .appendQueryParameter(APPID_PARAM, BuildConfig.THE_MOVIE_DB_API_KEY)
                     .build();
@@ -120,31 +121,19 @@ public class FetchPopularMoviesTask extends AsyncTask<Void, Void, List<Movie>> {
             return;
         }
 
-        sortMoviesAcordingToSettings(result);
-
         adapter.clear();
         adapter.addAll(result);
     }
 
-    private void sortMoviesAcordingToSettings(List<Movie> result) {
+    private String getSortingPathAccordingToSettings() {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
         String prefSortOrder = preferences.getString(context.getString(R.string.pref_key_sort_order)
                 , context.getString(R.string.pref_default_sort_order));
 
-        if(context.getString(R.string.sort_oder_value_popular).equalsIgnoreCase(prefSortOrder)){
-            Collections.sort(result, new Comparator<Movie>() {
-                public int compare(Movie movie1, Movie movie2) {
-                    return movie2.getPopularity() < movie1.getPopularity() ? -1 :
-                            (movie2.getPopularity() == movie1.getPopularity() ? 0 : 1);
-                }
-            });
-        }else{
-            Collections.sort(result, new Comparator<Movie>() {
-                public int compare(Movie movie1, Movie movie2) {
-                    return movie2.getVoteAverage() < movie1.getVoteAverage() ? -1 :
-                            (movie2.getVoteAverage() == movie1.getVoteAverage() ? 0 : 1);
-                }
-            });
+        if (context.getString(R.string.sort_oder_value_popular).equalsIgnoreCase(prefSortOrder)) {
+            return Constants.MOVIEDB_POPULAR_PATH;
+        } else {
+            return Constants.MOVIEDB_TOP_RATED_PATH;
         }
     }
 

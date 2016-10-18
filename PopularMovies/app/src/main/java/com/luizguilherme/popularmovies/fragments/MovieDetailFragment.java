@@ -17,7 +17,7 @@ import com.squareup.picasso.Picasso;
 
 import java.util.Locale;
 
-import static com.luizguilherme.popularmovies.Constants.MOVIEDB_BASE_URL;
+import static com.luizguilherme.popularmovies.Constants.MOVIEDB_IMAGE_BASE_URL;
 import static com.luizguilherme.popularmovies.Constants.POSTER_SIZE;
 
 
@@ -56,7 +56,7 @@ public class MovieDetailFragment extends Fragment {
         TextView userRating = (TextView) rootView.findViewById(R.id.user_rating);
         TextView overview = (TextView) rootView.findViewById(R.id.overview);
 
-        String imageUrl = MOVIEDB_BASE_URL + POSTER_SIZE + movie.getPosterPath();
+        String imageUrl = MOVIEDB_IMAGE_BASE_URL + POSTER_SIZE + movie.getPosterPath();
 
         Picasso.with(getContext()).load(imageUrl).into(moviePoster);
         originalTitle.setText(movie.getOriginalTitle());
