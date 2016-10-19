@@ -167,7 +167,7 @@ public class FetchPopularMoviesTask extends AsyncTask<Void, Void, List<Movie>> {
             String releaseDate = movieObject.getString(MDB_RELEASE_DATE);
             double popularity = movieObject.getDouble(MDB_POPULARITY);
 
-            Movie movie = new Movie(id, originalTitle, posterPath, overview, voteAverage, releaseDate, popularity);
+            Movie movie = new Movie(id, originalTitle, posterPath, overview, voteAverage, releaseDate);
 
             moviesResult.add(movie);
 

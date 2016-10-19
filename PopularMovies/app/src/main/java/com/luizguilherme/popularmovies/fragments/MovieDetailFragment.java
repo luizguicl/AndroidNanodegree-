@@ -44,7 +44,7 @@ public class MovieDetailFragment extends Fragment {
 
         Intent intent = getActivity().getIntent();
         if (intent != null && intent.hasExtra(Constants.EXTRA_MOVIE)) {
-            movie = (Movie) intent.getSerializableExtra(Constants.EXTRA_MOVIE);
+            movie = intent.getParcelableExtra(Constants.EXTRA_MOVIE);
         }else{
             Log.d(TAG, "Could not get movie from extras.");
             return rootView;
