@@ -34,7 +34,11 @@ public class MoviesAdapter extends ArrayAdapter<Movie> {
         String imageUrl = MOVIEDB_IMAGE_BASE_URL + POSTER_SIZE + movie.getPosterPath();
 
         ImageView poster = (ImageView) convertView.findViewById(R.id.poster_image);
-        Picasso.with(getContext()).load(imageUrl).into(poster);
+        Picasso.with(getContext())
+                .load(imageUrl)
+                .placeholder(R.mipmap.placeholder_movie_poster)
+                .error(R.mipmap.placeholder_movie_poster)
+                .into(poster);
 
         return convertView;
     }

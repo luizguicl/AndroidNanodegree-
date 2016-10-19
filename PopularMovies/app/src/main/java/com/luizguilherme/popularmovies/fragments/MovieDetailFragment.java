@@ -58,7 +58,11 @@ public class MovieDetailFragment extends Fragment {
 
         String imageUrl = MOVIEDB_IMAGE_BASE_URL + POSTER_SIZE_DETAIL + movie.getPosterPath();
 
-        Picasso.with(getContext()).load(imageUrl).into(moviePoster);
+        Picasso.with(getContext())
+                .load(imageUrl)
+                .placeholder(R.mipmap.placeholder_movie_poster)
+                .error(R.mipmap.placeholder_movie_poster)
+                .into(moviePoster);
         originalTitle.setText(movie.getOriginalTitle());
         String formattedDate = String.format("(%s)", movie.getReleaseDate());
         releaseDate.setText(formattedDate);
