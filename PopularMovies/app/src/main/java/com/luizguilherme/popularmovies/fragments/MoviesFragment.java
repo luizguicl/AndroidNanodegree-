@@ -13,7 +13,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.Toast;
 
@@ -27,11 +26,21 @@ import com.luizguilherme.popularmovies.activities.SettingsActivity;
 
 import java.util.ArrayList;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnItemClick;
+import butterknife.Unbinder;
+
 
 public class MoviesFragment extends Fragment {
 
+    @BindView(R.id.moviesList)
+    GridView listView;
+
     private final String TAG = MoviesFragment.class.getSimpleName();
+
     private MoviesAdapter moviesAdapter;
+    private Unbinder unbinder;
 
     public MoviesFragment() {
     }
@@ -47,24 +56,14 @@ public class MoviesFragment extends Fragment {
     public View onCreateView(final LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         View rootView = inflater.inflate(R.layout.fragment_movies, container, false);
+        unbinder = ButterKnife.bind(this, rootView);
 
         moviesAdapter = new MoviesAdapter(
                 getActivity(),
                 new ArrayList<Movie>()
         );
 
-        GridView listView = (GridView) rootView.findViewById(R.id.moviesList);
         listView.setAdapter(moviesAdapter);
-
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Movie movie = moviesAdapter.getItem(position);
-                Intent intent = new Intent(getActivity(), MovieDetailActivity.class);
-                intent.putExtra(Constants.EXTRA_MOVIE, movie);
-                startActivity(intent);
-            }
-        });
 
         return rootView;
     }
@@ -78,6 +77,12 @@ public class MoviesFragment extends Fragment {
         } else {
             Toast.makeText(getActivity(), "There is no internet connection!", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    @Override
+    public void onDestroyView() {
+        unbinder.unbind();
+        super.onDestroyView();
     }
 
     @Override
@@ -97,6 +102,14 @@ public class MoviesFragment extends Fragment {
                 return super.onOptionsItemSelected(item);
         }
 
+    }
+
+    @OnItemClick(R.id.moviesList)
+    void onItemClicked(int position) {
+        Movie movie = moviesAdapter.getItem(position);
+        Intent intent = new Intent(getActivity(), MovieDetailActivity.class);
+        intent.putExtra(Constants.EXTRA_MOVIE, movie);
+        startActivity(intent);
     }
 
     public boolean isOnline() {

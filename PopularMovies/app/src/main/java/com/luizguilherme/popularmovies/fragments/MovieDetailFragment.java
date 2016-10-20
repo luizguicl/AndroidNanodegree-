@@ -17,13 +17,30 @@ import com.squareup.picasso.Picasso;
 
 import java.util.Locale;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.Unbinder;
+
 import static com.luizguilherme.popularmovies.Constants.MOVIEDB_IMAGE_BASE_URL;
 import static com.luizguilherme.popularmovies.Constants.POSTER_SIZE_DETAIL;
 
 
 public class MovieDetailFragment extends Fragment {
 
+    @BindView(R.id.movie_poster)
+    ImageView moviePoster;
+    @BindView(R.id.original_title)
+    TextView originalTitle;
+    @BindView(R.id.release_date)
+    TextView releaseDate;
+    @BindView(R.id.user_rating)
+    TextView userRating;
+    @BindView(R.id.overview)
+    TextView overview;
+
     private static final String TAG = MovieDetailFragment.class.getSimpleName();
+
+    private Unbinder unbinder;
 
     public MovieDetailFragment() {
     }
@@ -39,22 +56,17 @@ public class MovieDetailFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         View rootView = inflater.inflate(R.layout.fragment_movie_detail, container, false);
+        unbinder = ButterKnife.bind(this, rootView);
 
         Movie movie = null;
 
         Intent intent = getActivity().getIntent();
         if (intent != null && intent.hasExtra(Constants.EXTRA_MOVIE)) {
             movie = intent.getParcelableExtra(Constants.EXTRA_MOVIE);
-        }else{
+        } else {
             Log.d(TAG, "Could not get movie from extras.");
             return rootView;
         }
-
-        ImageView moviePoster = (ImageView) rootView.findViewById(R.id.movie_poster);
-        TextView originalTitle = (TextView) rootView.findViewById(R.id.original_title);
-        TextView releaseDate = (TextView) rootView.findViewById(R.id.release_date);
-        TextView userRating = (TextView) rootView.findViewById(R.id.user_rating);
-        TextView overview = (TextView) rootView.findViewById(R.id.overview);
 
         String imageUrl = MOVIEDB_IMAGE_BASE_URL + POSTER_SIZE_DETAIL + movie.getPosterPath();
 
@@ -72,4 +84,9 @@ public class MovieDetailFragment extends Fragment {
         return rootView;
     }
 
+    @Override
+    public void onDestroyView() {
+        unbinder.unbind();
+        super.onDestroyView();
+    }
 }
