@@ -6,10 +6,4 @@
     android:layout_height="match_parent"
     tools:context="com.luizguilherme.sunshine.MainActivity">
 
-    <fragment
-        android:id="@+id/main_fragment"
-        android:name="com.luizguilherme.sunshine.ForecastFragment"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-
 </FrameLayout>

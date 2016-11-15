@@ -13,15 +13,36 @@ import android.view.MenuItem;
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = MainActivity.class.getSimpleName();
+    private static final String FORECASTFRAGMENT_TAG = "ForecastFragment";
+
+    private String location;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        if (savedInstanceState == null) {
+            getSupportFragmentManager().beginTransaction()
+                    .add(R.id.activity_main, new ForecastFragment(), FORECASTFRAGMENT_TAG)
+                    .commit();
+        }
+
+        location = Utility.getPreferredLocation(this);
+
 //        PreferenceManager.setDefaultValues(this, R.xml.pref_general, false);
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        if(!location.equalsIgnoreCase(Utility.getPreferredLocation(this))){
+            ForecastFragment ff = (ForecastFragment)getSupportFragmentManager().findFragmentByTag(FORECASTFRAGMENT_TAG);
+            ff.onLocationChanged();
+            location = Utility.getPreferredLocation(this);
+        }
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
