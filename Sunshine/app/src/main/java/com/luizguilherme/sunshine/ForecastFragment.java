@@ -41,10 +41,15 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
             WeatherContract.WeatherEntry.COLUMN_SHORT_DESC,
             WeatherContract.WeatherEntry.COLUMN_MAX_TEMP,
             WeatherContract.WeatherEntry.COLUMN_MIN_TEMP,
+            WeatherContract.WeatherEntry.COLUMN_HUMIDITY,
+            WeatherContract.WeatherEntry.COLUMN_WIND_SPEED,
+            WeatherContract.WeatherEntry.COLUMN_DEGREES,
+            WeatherContract.WeatherEntry.COLUMN_PRESSURE,
             WeatherContract.LocationEntry.COLUMN_LOCATION_SETTING,
             WeatherContract.WeatherEntry.COLUMN_WEATHER_ID,
             WeatherContract.LocationEntry.COLUMN_COORD_LAT,
-            WeatherContract.LocationEntry.COLUMN_COORD_LONG
+            WeatherContract.LocationEntry.COLUMN_COORD_LONG,
+
     };
 
     // These indices are tied to FORECAST_COLUMNS.  If FORECAST_COLUMNS changes, these
@@ -54,10 +59,14 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
     static final int COL_WEATHER_DESC = 2;
     static final int COL_WEATHER_MAX_TEMP = 3;
     static final int COL_WEATHER_MIN_TEMP = 4;
-    static final int COL_LOCATION_SETTING = 5;
-    static final int COL_WEATHER_CONDITION_ID = 6;
-    static final int COL_COORD_LAT = 7;
-    static final int COL_COORD_LONG = 8;
+    static final int COL_WEATHER_HUMIDITY = 5;
+    static final int COL_WEATHER_WIND_SPEED = 6;
+    static final int COL_WEATHER_DEGREES = 7;
+    static final int COL_WEATHER_PRESSURE = 8;
+    static final int COL_LOCATION_SETTING = 9;
+    static final int COL_WEATHER_CONDITION_ID = 10;
+    static final int COL_COORD_LAT = 11;
+    static final int COL_COORD_LONG = 12;
 
     private ForecastAdapter forecastAdapter;
 

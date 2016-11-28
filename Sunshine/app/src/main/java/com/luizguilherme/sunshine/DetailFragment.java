@@ -18,11 +18,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
-
-import com.luizguilherme.sunshine.data.WeatherContract;
-
-import static android.R.attr.data;
 
 
 /**
@@ -42,7 +39,14 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
 
     private ShareActionProvider shareActionProvider;
 
-    private TextView detailContent;
+    private TextView dayview;
+    private TextView dateview;
+    private TextView hightemperatureview;
+    private TextView lowtemperatureview;
+    private TextView humidityview;
+    private TextView windview;
+    private TextView pressureview;
+    private android.widget.ImageView iconview;
 
     public DetailFragment() {
     }
@@ -61,15 +65,22 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         View rootView = inflater.inflate(R.layout.fragment_detail, container, false);
+
+        iconview = (ImageView) rootView.findViewById(R.id.icon_view);
+        pressureview = (TextView) rootView.findViewById(R.id.pressure_view);
+        windview = (TextView) rootView.findViewById(R.id.wind_view);
+        humidityview = (TextView) rootView.findViewById(R.id.humidity_view);
+        lowtemperatureview = (TextView) rootView.findViewById(R.id.low_temperature_view);
+        hightemperatureview = (TextView) rootView.findViewById(R.id.high_temperature_view);
+        dateview = (TextView) rootView.findViewById(R.id.date_view);
+        dayview = (TextView) rootView.findViewById(R.id.day_view);
 
         Intent intent = getActivity().getIntent();
         if (intent != null) {
             forecastStringUri = intent.getDataString();
         }
-
-        detailContent = (TextView) rootView.findViewById(R.id.detail_content);
-
 
         return rootView;
     }
@@ -143,7 +154,8 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         if (data.moveToNext()) {
             forecastDataString = convertCursorRowToUXFormat(data);
-            detailContent.setText(forecastDataString);
+
+            bindData(data);
 
             String shareForecastData = TextUtils.concat(forecastDataString, "#SunshineApp").toString();
 
@@ -154,6 +166,28 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
+
+    }
+
+    private void bindData(Cursor data) {
+        int weatherId = data.getInt(ForecastFragment.COL_WEATHER_CONDITION_ID);
+        long dateInMilli = data.getLong(ForecastFragment.COL_WEATHER_DATE);
+        double high = data.getDouble(ForecastFragment.COL_WEATHER_MAX_TEMP);
+        double low = data.getDouble(ForecastFragment.COL_WEATHER_MIN_TEMP);
+        float humidity = data.getFloat(ForecastFragment.COL_WEATHER_HUMIDITY);
+        float windSpeed = data.getFloat(ForecastFragment.COL_WEATHER_WIND_SPEED);
+        float degrees = data.getFloat(ForecastFragment.COL_WEATHER_DEGREES);
+        float pressure = data.getFloat(ForecastFragment.COL_WEATHER_PRESSURE);
+
+        iconview.setImageResource(Utility.getArtResourceForWeatherCondition(weatherId));
+        dayview.setText(Utility.getDayName(getContext(), dateInMilli));
+        dateview.setText(Utility.getFormattedMonthDay(getContext(), dateInMilli));
+        hightemperatureview.setText(getContext().getString(R.string.format_temperature, high));
+        lowtemperatureview.setText(getContext().getString(R.string.format_temperature, low));
+        humidityview.setText(getContext().getString(R.string.format_humidity, humidity));
+        windview.setText(Utility.getFormattedWind(getContext(), windSpeed, degrees));
+        pressureview.setText(getContext().getString(R.string.format_pressure, pressure));
+
 
     }
 
@@ -170,7 +204,7 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
 
     private String formatHighLows(double high, double low) {
         boolean isMetric = Utility.isMetric(getActivity());
-        String highLowStr = Utility.formatTemperature(high, isMetric) + "/" + Utility.formatTemperature(low, isMetric);
+        String highLowStr = Utility.formatTemperature(getContext(), high, isMetric) + "/" + Utility.formatTemperature(getContext(), low, isMetric);
         return highLowStr;
     }
 }
