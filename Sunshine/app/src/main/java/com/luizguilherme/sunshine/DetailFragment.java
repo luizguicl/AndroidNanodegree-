@@ -21,6 +21,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.luizguilherme.sunshine.data.WeatherContract;
+
 
 /**
  * A simple {@link Fragment} subclass.
@@ -34,7 +36,9 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
 
     private static final int WEATHER_DETAIL_LOADER_ID = 1;
 
-    private String forecastStringUri;
+    public static final String ARG_FORECAST_URI = "forecastUri";
+
+    private Uri forecastUri;
     private String forecastDataString;
 
     private ShareActionProvider shareActionProvider;
@@ -46,13 +50,17 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
     private TextView humidityview;
     private TextView windview;
     private TextView pressureview;
-    private android.widget.ImageView iconview;
+    private ImageView iconview;
+    private TextView descriptionview;
 
     public DetailFragment() {
     }
 
-    public static DetailFragment newInstance(String param1, String param2) {
+    public static DetailFragment newInstance(Uri forecastUri) {
         DetailFragment fragment = new DetailFragment();
+
+        Bundle arguments = new Bundle();
+        arguments.putParcelable(ARG_FORECAST_URI, forecastUri);
         return fragment;
     }
 
@@ -66,21 +74,22 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
+        Bundle arguments = getArguments();
+        if (arguments != null) {
+            forecastUri = arguments.getParcelable(DetailFragment.ARG_FORECAST_URI);
+        }
+
         View rootView = inflater.inflate(R.layout.fragment_detail, container, false);
 
-        iconview = (ImageView) rootView.findViewById(R.id.icon_view);
-        pressureview = (TextView) rootView.findViewById(R.id.pressure_view);
-        windview = (TextView) rootView.findViewById(R.id.wind_view);
-        humidityview = (TextView) rootView.findViewById(R.id.humidity_view);
-        lowtemperatureview = (TextView) rootView.findViewById(R.id.low_temperature_view);
-        hightemperatureview = (TextView) rootView.findViewById(R.id.high_temperature_view);
-        dateview = (TextView) rootView.findViewById(R.id.date_view);
-        dayview = (TextView) rootView.findViewById(R.id.day_view);
-
-        Intent intent = getActivity().getIntent();
-        if (intent != null) {
-            forecastStringUri = intent.getDataString();
-        }
+        iconview = (ImageView) rootView.findViewById(R.id.detail_icon);
+        descriptionview = (TextView) rootView.findViewById(R.id.detail_forecast_textview);
+        pressureview = (TextView) rootView.findViewById(R.id.detail_pressure_textview);
+        windview = (TextView) rootView.findViewById(R.id.detail_wind_textview);
+        humidityview = (TextView) rootView.findViewById(R.id.detail_humidity_textview);
+        lowtemperatureview = (TextView) rootView.findViewById(R.id.detail_low_textview);
+        hightemperatureview = (TextView) rootView.findViewById(R.id.detail_high_textview);
+        dateview = (TextView) rootView.findViewById(R.id.detail_date_textview);
+        dayview = (TextView) rootView.findViewById(R.id.detail_day_textview);
 
         return rootView;
     }
@@ -133,21 +142,26 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        switch (id) {
-            case WEATHER_DETAIL_LOADER_ID:
+       if(forecastUri != null){
 
-                return new CursorLoader(
-                        getActivity(),   // Parent activity context
-                        Uri.parse(forecastStringUri),// Table to query
-                        ForecastFragment.FORECAST_COLUMNS,     // Projection to return
-                        null,            // No selection clause
-                        null,            // No selection arguments
-                        null        // Default sort order
-                );
-            default:
-                // An invalid id was passed in
-                return null;
-        }
+           switch (id) {
+               case WEATHER_DETAIL_LOADER_ID:
+
+                   return new CursorLoader(
+                           getActivity(),   // Parent activity context
+                           forecastUri,// Table to query
+                           ForecastFragment.FORECAST_COLUMNS,     // Projection to return
+                           null,            // No selection clause
+                           null,            // No selection arguments
+                           null        // Default sort order
+                   );
+               default:
+                   // An invalid id was passed in
+                   return null;
+           }
+
+       }
+        return null;
     }
 
     @Override
@@ -171,6 +185,7 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
 
     private void bindData(Cursor data) {
         int weatherId = data.getInt(ForecastFragment.COL_WEATHER_CONDITION_ID);
+        String descrition = data.getString(ForecastFragment.COL_WEATHER_DESC);
         long dateInMilli = data.getLong(ForecastFragment.COL_WEATHER_DATE);
         double high = data.getDouble(ForecastFragment.COL_WEATHER_MAX_TEMP);
         double low = data.getDouble(ForecastFragment.COL_WEATHER_MIN_TEMP);
@@ -180,6 +195,7 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
         float pressure = data.getFloat(ForecastFragment.COL_WEATHER_PRESSURE);
 
         iconview.setImageResource(Utility.getArtResourceForWeatherCondition(weatherId));
+        descriptionview.setText(descrition);
         dayview.setText(Utility.getDayName(getContext(), dateInMilli));
         dateview.setText(Utility.getFormattedMonthDay(getContext(), dateInMilli));
         hightemperatureview.setText(getContext().getString(R.string.format_temperature, high));
@@ -204,7 +220,30 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
 
     private String formatHighLows(double high, double low) {
         boolean isMetric = Utility.isMetric(getActivity());
-        String highLowStr = Utility.formatTemperature(getContext(), high, isMetric) + "/" + Utility.formatTemperature(getContext(), low, isMetric);
+        String highLowStr = Utility.formatTemperature(getContext(), high) + "/" + Utility.formatTemperature(getContext(), low);
         return highLowStr;
+    }
+
+    void onLocationChanged(String newLocation) {
+        // replace the uri, since the location has changed
+        Uri uri = forecastUri;
+        if (null != uri) {
+            long date = WeatherContract.WeatherEntry.getDateFromUri(uri);
+            Uri updatedUri = WeatherContract.WeatherEntry.buildWeatherLocationWithDate(newLocation, date);
+            forecastUri = updatedUri;
+            getLoaderManager().restartLoader(WEATHER_DETAIL_LOADER_ID, null, this);
+        }
+    }
+
+    /**
+     * A callback interface that all activities containing this fragment must
+     * implement. This mechanism allows activities to be notified of item
+     * selections.
+     */
+    public interface Callback {
+        /**
+         * DetailFragmentCallback for when an item has been selected.
+         */
+        public void onItemSelected(Uri dateUri);
     }
 }
